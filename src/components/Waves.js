@@ -84,6 +84,8 @@ export const Waves = ({
     <svg
       width={width / 2}
       height={height}
+      viewBox="0 0 400 400"
+      preserveAspectRatio="xMidYMid slice"
       xmlns="http://www.w3.org/2000/svg"
       style={{ backgroundColor: colors[0] }}
     >
