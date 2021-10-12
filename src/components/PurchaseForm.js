@@ -7,8 +7,6 @@ import { Web3Provider } from "@ethersproject/providers";
 import { ABI } from "../lib";
 import Reward from "react-rewards";
 
-// @todo Setup
-
 const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider,
