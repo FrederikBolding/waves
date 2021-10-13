@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Text, Button, Input } from "@chakra-ui/react";
-import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Contract } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
 import { ABI } from "../lib";
 import Reward from "react-rewards";
 
-// @todo Setup
+// Hack to fix build
+const Web3Modal = typeof window !== `undefined` ? require("web3modal") : null;
 
 const providerOptions = {
   walletconnect: {
@@ -18,7 +18,7 @@ const providerOptions = {
   },
 };
 
-const web3Modal = new Web3Modal({
+const web3Modal = Web3Modal && new Web3Modal.default({
   network: "mainnet",
   cacheProvider: true,
   providerOptions,

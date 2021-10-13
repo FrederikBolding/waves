@@ -3,6 +3,8 @@ import { Box, Text, VStack, Heading, Container } from "@chakra-ui/react";
 import { Waves, Footer, FAQ, PurchaseForm } from "../components";
 import { Color } from "../util/color";
 
+const LIVE = false;
+
 const IndexPage = () => {
   return (
     <Container>
@@ -27,7 +29,7 @@ const IndexPage = () => {
               endColor={new Color(115, 76, 73)}
             />
           </Box>
-          <PurchaseForm />
+          {LIVE ? <PurchaseForm /> : <Text>Coming soon</Text>}
           <FAQ />
           <Footer />
         </VStack>
