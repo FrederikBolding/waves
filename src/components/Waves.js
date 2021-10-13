@@ -20,12 +20,10 @@ export const Waves = ({
     for (let i = 0; i < waveCount; i++) {
       const points = calculateWavePoints(i);
       waves.push(points);
-      colors.push(gradient(startColor, endColor, i, waveCount + 1).toHSL());
+      colors.push(gradient(startColor, endColor, i, waveCount).toHSL());
     }
     // Make sure we have enough for the background too!
-    colors.push(
-      gradient(startColor, endColor, waveCount, waveCount + 1).toHSL()
-    );
+    colors.push(gradient(startColor, endColor, waveCount, waveCount).toHSL());
     return { waves, colors };
   };
 
@@ -51,6 +49,8 @@ export const Waves = ({
   };
 
   const { waves, colors } = calculateAllWaves();
+
+  console.log(colors);
 
   const drawn = waves.map((points) => {
     let d = `M -${overflow} ${height + overflow}`;

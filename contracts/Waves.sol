@@ -15,6 +15,31 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
     string public constant DESCRIPTION =
         "A soothing, colorful & wavy NFT randomly generated on-chain!";
 
+    // Only half is shown, but rest is used for animation
+    uint256 constant WIDTH = 800;
+    uint256 constant HEIGHT = 400;
+
+    struct Color {
+        int256 hue;
+        int256 saturation;
+        int256 lightness;
+    }
+
+    struct DrawInput {
+        uint256 waveCount;
+        uint256 pulseWidth;
+        uint256 amplitude;
+        uint256 slope;
+        uint256 offset;
+        Color startColor;
+        Color endColor;
+    }
+
+    struct Point {
+        int256 x;
+        int256 y;
+    }
+
     function _mint(address destination) private {
         require(totalSupply() < MAX_MINTS, "MAX_REACHED");
 
@@ -96,22 +121,6 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
         return Color(h, s, l);
     }
 
-    struct Color {
-        int256 hue;
-        int256 saturation;
-        int256 lightness;
-    }
-
-    struct DrawInput {
-        uint256 waveCount;
-        uint256 pulseWidth;
-        uint256 amplitude;
-        uint256 slope;
-        uint256 offset;
-        Color startColor;
-        Color endColor;
-    }
-
     function tokenURI(uint256 tokenId)
         public
         view
@@ -119,32 +128,31 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
         returns (string memory)
     {
         require(totalSupply() >= tokenId, "MUST_BE_MINTED");
-        // @todo Make sure ranges are perfect
+        // @todo Make sure ranges and colors are perfect one last time
         uint256 waveCount = random(tokenId, "waveCount", 5, 9);
-        uint256 pulseWidth = random(tokenId, "pulseWidth", 60, 90);
+        uint256 pulseWidth = random(tokenId, "pulseWidth", 50, 90);
         uint256 amplitude = random(tokenId, "amplitude", 20, 40);
         uint256 slope = random(tokenId, "slope", 2, 4);
-        uint256 offset = random(tokenId, "offset", 0, 20);
-        // @todo Fix some issues with the colors
+        uint256 offset = random(tokenId, "offset", 0, 30);
         Color memory startColor = randomColor(tokenId, 0, 359, 40, 100, 30, 40);
         Color memory endColor = randomColor(
             tokenId,
             uint256(
                 maximum(
                     0,
-                    startColor.hue - int256(random(tokenId, "endHueMin", 5, 60))
+                    startColor.hue - int256(random(tokenId, "endHueMin", 5, 15))
                 )
             ),
             uint256(
                 minimum(
                     359,
-                    startColor.hue + int256(random(tokenId, "endHueMax", 5, 60))
+                    startColor.hue + int256(random(tokenId, "endHueMax", 5, 15))
                 )
             ),
             70,
             90,
-            70,
-            85
+            60,
+            75
         );
 
         DrawInput memory input = DrawInput(
@@ -195,9 +203,6 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
         return string(abi.encodePacked("data:application/json;base64,", json));
     }
 
-    uint256 constant WIDTH = 800;
-    uint256 constant HEIGHT = 400;
-
     function draw(DrawInput memory input) internal pure returns (bytes memory) {
         string memory output = string(
             abi.encodePacked(
@@ -229,7 +234,7 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
                 input.startColor,
                 input.endColor,
                 i + 1,
-                input.waveCount + 1
+                input.waveCount
             );
             Point[] memory points = calculateWavePoints(input, overflow, i);
             output = string(
@@ -243,11 +248,6 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
         output = string(abi.encodePacked(output, "</svg>"));
 
         return bytes(abi.encodePacked(output));
-    }
-
-    struct Point {
-        int256 x;
-        int256 y;
     }
 
     function calculateWavePoints(
