@@ -58,7 +58,7 @@ describe("Token contract", function () {
     });
   });
 
-  describe("Minting", function () {
+  describe("Minting for self", function () {
     it("Allows minting by paying price", async function () {
       await hardhatToken.mintForSelf({
         value: ethers.utils.parseEther("0.01"),
@@ -66,10 +66,74 @@ describe("Token contract", function () {
       const o = await hardhatToken.ownerOf(0);
       expect(o).to.equal(owner.address);
     });
+
+    it("Reverts if price not met", async function () {
+      await expect(hardhatToken.mintForSelf()).revertedWith("PriceNotMet");
+    });
+
+    it("Reverts if price not met", async function () {
+      await expect(
+        hardhatToken.mintForSelf({
+          value: ethers.utils.parseEther("0.001"),
+        })
+      ).revertedWith("PriceNotMet");
+    });
+  });
+
+  describe("Minting for others", function () {
+    it("Allows minting by paying price", async function () {
+      const contract = await hardhatToken.connect(addr1);
+      await contract.mintForFriend(addr2.address, {
+        value: ethers.utils.parseEther("0.01"),
+      });
+      const o = await hardhatToken.ownerOf(0);
+      expect(o).to.equal(addr2.address);
+    });
+
+    it("Reverts if price not met", async function () {
+      const contract = await hardhatToken.connect(addr1);
+      await expect(contract.mintForFriend(addr2.address)).revertedWith(
+        "PriceNotMet"
+      );
+    });
+
+    it("Reverts if price not met", async function () {
+      const contract = await hardhatToken.connect(addr1);
+      await expect(
+        contract.mintForFriend(addr2.address, {
+          value: ethers.utils.parseEther("0.001"),
+        })
+      ).revertedWith("PriceNotMet");
+    });
+  });
+
+  describe("Withdraw", function () {
+    it("Allows owner to withdraw", async function () {
+      await hardhatToken.mintForSelf({
+        value: ethers.utils.parseEther("0.01"),
+      });
+      const o = await hardhatToken.ownerOf(0);
+      expect(o).to.equal(owner.address);
+
+      const provider = hardhatToken.provider;
+      const balance = await provider.getBalance(hardhatToken.address);
+      expect(balance.toString()).to.equal("10000000000000000");
+
+      await hardhatToken.withdrawAll();
+
+      const balance2 = await provider.getBalance(hardhatToken.address);
+      expect(balance2.toString()).to.equal("0");
+    });
+
+    it("Doesnt allow others to withdraw", async function () {
+      const contract = await hardhatToken.connect(addr1);
+      await expect(contract.withdrawAll()).revertedWith("");
+    });
   });
 
   describe("Rendering", function () {
     it("Can draw", async function () {
+      this.timeout(2000000000);
       for (var i = 0; i < 10; i++) {
         await hardhatToken.mintForSelf({
           value: ethers.utils.parseEther("0.01"),
@@ -85,6 +149,8 @@ describe("Token contract", function () {
         const svg = Buffer.from(json.image.slice(26), "base64").toString(
           "utf-8"
         );
+        console.log(json.name);
+        //console.log(json.attributes);
         console.log(svg);
       }
     });

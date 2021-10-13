@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.8.0 <0.9.0;
+pragma solidity >=0.8.4 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Base64.sol";
+
+error MaxMintsReached();
+error PriceNotMet();
 
 contract Waves is ERC721, ERC721Enumerable, Ownable {
     constructor() ERC721("Waves", "WAVES") {}
@@ -41,19 +44,25 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
     }
 
     function _mint(address destination) private {
-        require(totalSupply() < MAX_MINTS, "MAX_REACHED");
+        if (totalSupply() >= MAX_MINTS) {
+            revert MaxMintsReached();
+        }
 
         uint256 tokenId = totalSupply();
         _safeMint(destination, tokenId);
     }
 
     function mintForSelf() external payable {
-        require(msg.value >= price, "PRICE_NOT_MET");
+        if (msg.value < price) {
+            revert PriceNotMet();
+        }
         _mint(msg.sender);
     }
 
     function mintForFriend(address walletAddress) external payable {
-        require(msg.value >= price, "PRICE_NOT_MET");
+        if (msg.value < price) {
+            revert PriceNotMet();
+        }
         _mint(walletAddress);
     }
 
