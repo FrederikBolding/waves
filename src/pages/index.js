@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Text, VStack, Heading, Container } from "@chakra-ui/react";
-import { Waves, Footer, FAQ, PurchaseForm } from "../components";
+import { Waves, Footer, FAQ, PurchaseForm, Seo } from "../components";
 import { Color } from "../util/color";
 
 const LIVE = false;
@@ -8,6 +8,7 @@ const LIVE = false;
 const IndexPage = () => {
   return (
     <Container>
+      <Seo />
       <Box p="4">
         <VStack>
           <Heading as="h1" size="2xl">
