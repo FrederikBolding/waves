@@ -8,10 +8,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Base64.sol";
 
 contract Waves is ERC721, ERC721Enumerable, Ownable {
-    constructor() public ERC721("Waves", "WAVES") {}
+    constructor() ERC721("Waves", "WAVES") {}
 
     uint256 public constant MAX_MINTS = 1000;
-    uint256 public price = 0.01 ether;
+    uint256 public constant price = 0.01 ether;
     string public constant DESCRIPTION =
         "A soothing, colorful & wavy NFT randomly generated on-chain!";
 
@@ -22,17 +22,17 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
         _safeMint(destination, tokenId);
     }
 
-    function mintForSelf() public payable virtual {
+    function mintForSelf() external payable {
         require(msg.value >= price, "PRICE_NOT_MET");
         _mint(msg.sender);
     }
 
-    function mintForFriend(address walletAddress) public payable virtual {
+    function mintForFriend(address walletAddress) external payable {
         require(msg.value >= price, "PRICE_NOT_MET");
         _mint(walletAddress);
     }
 
-    function withdrawAll() public payable onlyOwner {
+    function withdrawAll() external payable onlyOwner {
         require(payable(msg.sender).send(address(this).balance));
     }
 
@@ -83,7 +83,7 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
         Color memory end,
         uint256 _current,
         uint256 _max
-    ) public pure returns (Color memory) {
+    ) internal pure returns (Color memory) {
         int256 current = int256(_current);
         int256 max = int256(_max);
 
@@ -414,7 +414,6 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
         pure
         returns (string memory)
     {
-        // @todo safe?
         if (value < 0) {
             uint256 unsigned = uint256(value * -1);
             string memory output = toString(unsigned);
@@ -424,7 +423,7 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
     }
 
     function toStringColor(Color memory color)
-        public
+        internal
         pure
         returns (string memory)
     {
