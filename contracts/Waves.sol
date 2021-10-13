@@ -103,6 +103,10 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
         return b;
     }
 
+    function abs(int256 x) private pure returns (int256) {
+        return x >= 0 ? x : -x;
+    }
+
     function gradient(
         Color memory start,
         Color memory end,
@@ -259,7 +263,7 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
         bool direction = false;
 
         int256 x = -overflow + int256(input.offset) * int256(waveNumber);
-        uint256 pointsLength = WIDTH / input.pulseWidth;
+        uint256 pointsLength = (WIDTH + uint256(abs(x))) / input.pulseWidth;
         Point[] memory points = new Point[](pointsLength + 1);
         points[0] = Point(x, int256(startY));
         for (uint256 i = 1; i < pointsLength; i++) {
