@@ -13,21 +13,24 @@ const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider,
     options: {
-      infuraId: "INFURA_ID", // @todo
+      infuraId: "854b581018fe44a59897b53ee6a19551",
     },
   },
 };
 
-const web3Modal = Web3Modal && new Web3Modal.default({
-  network: "mainnet",
-  cacheProvider: true,
-  providerOptions,
-});
+const web3Modal =
+  Web3Modal &&
+  new Web3Modal.default({
+    network: "mainnet",
+    cacheProvider: true,
+    providerOptions,
+  });
 
 export const PurchaseForm = () => {
   const [web3, setWeb3] = useState(undefined);
   const [amountMinted, setAmountMinted] = useState(0);
   const [input, setInput] = useState("");
+  const [address, setAddress] = useState(undefined);
 
   const selfRewardRef = useRef();
   const friendRewardRef = useRef();
@@ -51,6 +54,7 @@ export const PurchaseForm = () => {
 
   useEffect(() => {
     if (contract) {
+      signer.getAddress().then((res) => setAddress(res));
       contract.totalSupply().then((res) => setAmountMinted(res.toString(10)));
     }
   }, [web3]);
@@ -87,6 +91,7 @@ export const PurchaseForm = () => {
       <Reward ref={friendRewardRef} type="confetti">
         <Button onClick={handleMintForFriend}>Mint for a friend</Button>
       </Reward>
+      {address && <Text textAlign="center">Connected Address {address}</Text>}
     </>
   ) : (
     <>
