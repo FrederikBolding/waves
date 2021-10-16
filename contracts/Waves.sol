@@ -180,6 +180,24 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
 
         bytes memory svg = draw(input);
 
+        string memory colorAttributes = string(
+            abi.encodePacked(
+                '{"trait_type":"startHue", "value": ',
+                toStringSigned(startColor.hue),
+                '},{"trait_type":"startSaturation", "value": ',
+                toStringSigned(startColor.saturation),
+                '},{"trait_type":"startLightness", "value": ',
+                toStringSigned(startColor.lightness),
+                '},{"trait_type":"endHue", "value": ',
+                toStringSigned(endColor.hue),
+                '},{"trait_type":"endSaturation", "value": ',
+                toStringSigned(endColor.saturation),
+                '},{"trait_type":"endLightness", "value": ',
+                toStringSigned(endColor.lightness),
+                "}"
+            )
+        );
+
         string memory attributes = string(
             abi.encodePacked(
                 '[{"trait_type":"waveCount", "value": ',
@@ -192,7 +210,9 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
                 toString(input.slope),
                 '},{"trait_type":"offset", "value": ',
                 toString(input.offset),
-                "}]"
+                "},",
+                colorAttributes,
+                "]"
             )
         );
 
