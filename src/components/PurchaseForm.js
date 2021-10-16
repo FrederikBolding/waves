@@ -83,8 +83,12 @@ export const PurchaseForm = () => {
 
   return web3 ? (
     <>
-      <Text>Waves are 0.01 ETH each</Text>
-      <Text>{amountMinted}/1000 minted</Text>
+      <Text>Waves are 0.01 ETH each - limited to 1 per tx</Text>
+      <Text fontWeight="bold">{amountMinted}/1000 minted</Text>
+      <Text fontStyle="italic" textAlign="center">
+        For your safety, please wait for your first tx to be mined before doing
+        further transactions.
+      </Text>
       {txHash && (
         <Text textAlign="center" fontWeight="bold">
           Thanks for purchasing!
