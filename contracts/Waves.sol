@@ -80,7 +80,7 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
         uint256 max
     ) internal pure returns (uint256) {
         return
-            (uint256(keccak256(abi.encodePacked(tokenId, key))) % (max - min)) +
+            (uint256(keccak256(abi.encodePacked("testnet", tokenId, key))) % (max - min)) +
             min;
     }
 
