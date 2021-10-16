@@ -3,7 +3,7 @@ import { Box, Text, VStack, Heading, Container } from "@chakra-ui/react";
 import { Waves, Footer, FAQ, PurchaseForm, Seo } from "../components";
 import { Color } from "../util/color";
 
-const LIVE = false;
+const LIVE = true;
 
 const IndexPage = () => {
   return (

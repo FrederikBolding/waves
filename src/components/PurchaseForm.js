@@ -21,7 +21,7 @@ const providerOptions = {
 const web3Modal =
   Web3Modal &&
   new Web3Modal.default({
-    network: "rinkeby",
+    network: "mainnet",
     cacheProvider: true,
     providerOptions,
   });
@@ -40,8 +40,7 @@ export const PurchaseForm = () => {
   const signer = provider && provider.getSigner();
   const contract =
     signer &&
-    // @todo Use actual contract
-    new Contract("0x6bf660c5ef01d6d3b0be8097a9a586191401ee8d", ABI, signer);
+    new Contract("0x9f2817015caF6607C1198fB943A8241652EE8906", ABI, signer);
 
   useEffect(() => {
     if (web3Modal.cachedProvider) {
@@ -75,7 +74,10 @@ export const PurchaseForm = () => {
     if (contract) {
       contract
         .mintForFriend(input, { value: utils.parseEther("0.01") })
-        .then(() => friendRewardRef.current.rewardMe());
+        .then((tx) => {
+          friendRewardRef.current.rewardMe();
+          setTxHash(tx.hash);
+        });
     }
   };
 

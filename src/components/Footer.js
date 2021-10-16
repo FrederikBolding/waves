@@ -3,11 +3,11 @@ import { Box, Link } from "@chakra-ui/react";
 
 export const Footer = () => (
   <Box mt="2">
-    <Link isExternal href="https://twitter.com/FrederikBolding">
+    <Link isExternal href="https://etherscan.io/address/0x9f2817015caf6607c1198fb943a8241652ee8906#code">
       Etherscan
     </Link>
     {" | "}
-    <Link isExternal href="https://twitter.com/FrederikBolding">
+    <Link isExternal href="https://opensea.io/collection/waves-by-frederik">
       OpenSea
     </Link>
     {" | "}

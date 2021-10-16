@@ -80,7 +80,7 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
         uint256 max
     ) internal pure returns (uint256) {
         return
-            (uint256(keccak256(abi.encodePacked("testnet", tokenId, key))) % (max - min)) +
+            (uint256(keccak256(abi.encodePacked("mainnet", tokenId, key))) % (max - min)) +
             min;
     }
 
@@ -144,7 +144,6 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
         returns (string memory)
     {
         require(totalSupply() >= tokenId, "MUST_BE_MINTED");
-        // @todo Make sure ranges and colors are perfect one last time
         uint256 waveCount = random(tokenId, "waveCount", 5, 9);
         uint256 pulseWidth = random(tokenId, "pulseWidth", 50, 90);
         uint256 amplitude = random(tokenId, "amplitude", 20, 40);
