@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Text, Button, Input } from "@chakra-ui/react";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Contract } from "ethers";
+import { Contract, utils } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
 import { ABI } from "../lib";
 import Reward from "react-rewards";
@@ -21,7 +21,7 @@ const providerOptions = {
 const web3Modal =
   Web3Modal &&
   new Web3Modal.default({
-    network: "mainnet",
+    network: "rinkeby",
     cacheProvider: true,
     providerOptions,
   });
@@ -40,7 +40,7 @@ export const PurchaseForm = () => {
   const contract =
     signer &&
     // @todo Use actual contract
-    new Contract("0xc3f5e8a98b3d97f19938e4673fd97c7cfd155577", ABI, signer);
+    new Contract("0x6bf660c5ef01d6d3b0be8097a9a586191401ee8d", ABI, signer);
 
   useEffect(() => {
     if (web3Modal.cachedProvider) {
@@ -61,7 +61,9 @@ export const PurchaseForm = () => {
 
   const handleMint = () => {
     if (contract) {
-      contract.mintForSelf().then(() => selfRewardRef.current.rewardMe());
+      contract
+        .mintForSelf({ value: utils.parseEther("0.01") })
+        .then(() => selfRewardRef.current.rewardMe());
     }
   };
 
@@ -70,7 +72,7 @@ export const PurchaseForm = () => {
   const handleMintForFriend = () => {
     if (contract) {
       contract
-        .mintForFriend(input)
+        .mintForFriend(input, { value: utils.parseEther("0.01") })
         .then(() => friendRewardRef.current.rewardMe());
     }
   };

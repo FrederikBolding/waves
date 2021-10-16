@@ -5,6 +5,16 @@ export const ABI = [
     type: "constructor",
   },
   {
+    inputs: [],
+    name: "MaxMintsReached",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "PriceNotMet",
+    type: "error",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -178,91 +188,6 @@ export const ABI = [
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: "int256",
-            name: "hue",
-            type: "int256",
-          },
-          {
-            internalType: "int256",
-            name: "saturation",
-            type: "int256",
-          },
-          {
-            internalType: "int256",
-            name: "lightness",
-            type: "int256",
-          },
-        ],
-        internalType: "struct Waves.Color",
-        name: "start",
-        type: "tuple",
-      },
-      {
-        components: [
-          {
-            internalType: "int256",
-            name: "hue",
-            type: "int256",
-          },
-          {
-            internalType: "int256",
-            name: "saturation",
-            type: "int256",
-          },
-          {
-            internalType: "int256",
-            name: "lightness",
-            type: "int256",
-          },
-        ],
-        internalType: "struct Waves.Color",
-        name: "end",
-        type: "tuple",
-      },
-      {
-        internalType: "uint256",
-        name: "_current",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "_max",
-        type: "uint256",
-      },
-    ],
-    name: "gradient",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "int256",
-            name: "hue",
-            type: "int256",
-          },
-          {
-            internalType: "int256",
-            name: "saturation",
-            type: "int256",
-          },
-          {
-            internalType: "int256",
-            name: "lightness",
-            type: "int256",
-          },
-        ],
-        internalType: "struct Waves.Color",
-        name: "",
-        type: "tuple",
-      },
-    ],
-    stateMutability: "pure",
     type: "function",
   },
   {
@@ -473,42 +398,6 @@ export const ABI = [
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: "int256",
-            name: "hue",
-            type: "int256",
-          },
-          {
-            internalType: "int256",
-            name: "saturation",
-            type: "int256",
-          },
-          {
-            internalType: "int256",
-            name: "lightness",
-            type: "int256",
-          },
-        ],
-        internalType: "struct Waves.Color",
-        name: "color",
-        type: "tuple",
-      },
-    ],
-    name: "toStringColor",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "pure",
     type: "function",
   },
   {
