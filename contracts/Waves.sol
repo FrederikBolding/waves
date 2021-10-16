@@ -67,7 +67,10 @@ contract Waves is ERC721, ERC721Enumerable, Ownable {
     }
 
     function withdrawAll() external payable onlyOwner {
-        require(payable(msg.sender).send(address(this).balance));
+        (bool success, ) = payable(msg.sender).call{
+            value: address(this).balance
+        }("");
+        require(success, "Withdraw failed");
     }
 
     function random(
