@@ -3,7 +3,7 @@ import { Box, Link } from "@chakra-ui/react";
 
 export const Footer = () => (
   <Box mt="2">
-    <Link isExternal href="https://etherscan.io/address/0x9f2817015caf6607c1198fb943a8241652ee8906#code">
+    <Link isExternal href="https://etherscan.io/address/0x9f2817015caf6607c1198fb943a8241652ee8906">
       Etherscan
     </Link>
     {" | "}
