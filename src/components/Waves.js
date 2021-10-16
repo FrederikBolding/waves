@@ -50,8 +50,6 @@ export const Waves = ({
 
   const { waves, colors } = calculateAllWaves();
 
-  console.log(colors);
-
   const drawn = waves.map((points) => {
     let d = `M -${overflow} ${height + overflow}`;
     d += ` L ${points[0].x} ${points[0].y}`;

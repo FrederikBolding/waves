@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Text, Button, Input } from "@chakra-ui/react";
+import { Text, Button, Input, Link } from "@chakra-ui/react";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Contract, utils } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
@@ -31,6 +31,7 @@ export const PurchaseForm = () => {
   const [amountMinted, setAmountMinted] = useState(0);
   const [input, setInput] = useState("");
   const [address, setAddress] = useState(undefined);
+  const [txHash, setTxHash] = useState(undefined);
 
   const selfRewardRef = useRef();
   const friendRewardRef = useRef();
@@ -61,9 +62,10 @@ export const PurchaseForm = () => {
 
   const handleMint = () => {
     if (contract) {
-      contract
-        .mintForSelf({ value: utils.parseEther("0.01") })
-        .then(() => selfRewardRef.current.rewardMe());
+      contract.mintForSelf({ value: utils.parseEther("0.01") }).then((tx) => {
+        selfRewardRef.current.rewardMe();
+        setTxHash(tx.hash);
+      });
     }
   };
 
@@ -81,6 +83,15 @@ export const PurchaseForm = () => {
     <>
       <Text>Waves are 0.01 ETH each</Text>
       <Text>{amountMinted}/1000 minted</Text>
+      {txHash && (
+        <Text textAlign="center" fontWeight="bold">
+          Thanks for purchasing!
+          <br />
+          <Link isExternal href={`https://etherscan.io/tx/${txHash}`}>
+            View TX on Etherscan
+          </Link>
+        </Text>
+      )}
       <Reward ref={selfRewardRef} type="confetti">
         <Button onClick={handleMint}>Mint for yourself</Button>
       </Reward>
