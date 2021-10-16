@@ -4,23 +4,21 @@ import { rand } from "../util/random";
 import { Color } from "../util/color";
 
 const TestPage = () => {
-  // @todo Figure out best random val ranges
   // @todo Tweak colors and fix gradients for some pairings
   const startColor = Color.random(0, 359, 40, 100, 30, 40);
   const endColor = Color.random(
-    Math.max(0, startColor.h - rand(5, 60)),
-    Math.min(359, startColor.h + rand(5, 60)),
+    Math.max(0, startColor.h - rand(5, 15)),
+    Math.min(359, startColor.h + rand(5, 15)),
     70,
     90,
     60,
     75
   );
-
-  const waveCount = rand(6, 9);
-  const pulseWidth = rand(60, 90);
+  const waveCount = rand(5, 9);
+  const pulseWidth = rand(50, 90);
   const amplitude = rand(20, 40);
   const slope = rand(2, 4);
-  const offset = rand(0, 20);
+  const offset = rand(0, 30);
 
   return (
     <main>
