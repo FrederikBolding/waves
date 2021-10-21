@@ -18,6 +18,8 @@ const providerOptions = {
   },
 };
 
+const MAINNET_CHAINID = 1;
+
 const web3Modal =
   Web3Modal &&
   new Web3Modal.default({
@@ -31,12 +33,13 @@ export const PurchaseForm = () => {
   const [amountMinted, setAmountMinted] = useState(0);
   const [input, setInput] = useState("");
   const [address, setAddress] = useState(undefined);
+  const [network, setNetwork] = useState(undefined);
   const [txHash, setTxHash] = useState(undefined);
 
   const selfRewardRef = useRef();
   const friendRewardRef = useRef();
 
-  const provider = web3 && new Web3Provider(web3);
+  const provider = web3 && new Web3Provider(web3, "any");
   const signer = provider && provider.getSigner();
   const contract =
     signer &&
@@ -52,10 +55,17 @@ export const PurchaseForm = () => {
     web3Modal.connect().then(setWeb3);
   };
 
+  const updateInfo = () => {
+    signer.getChainId().then((res) => setNetwork(res));
+    signer.getAddress().then((res) => setAddress(res));
+    contract.totalSupply().then((res) => setAmountMinted(res.toString(10)));
+  };
+
   useEffect(() => {
     if (contract) {
-      signer.getAddress().then((res) => setAddress(res));
-      contract.totalSupply().then((res) => setAmountMinted(res.toString(10)));
+      updateInfo();
+      web3.on("accountsChanged", updateInfo);
+      web3.on("chainChanged", updateInfo);
     }
   }, [web3]);
 
@@ -81,37 +91,43 @@ export const PurchaseForm = () => {
     }
   };
 
+  const correctNetwork = network === MAINNET_CHAINID;
+
   return web3 ? (
-    <>
-      <Text>Waves are 0.01 ETH each - limited to 1 per tx</Text>
-      <Text fontWeight="bold">{amountMinted}/1000 minted</Text>
-      <Text fontStyle="italic" textAlign="center">
-        For your safety, please wait for your first tx to be mined before doing
-        further transactions.
-      </Text>
-      {txHash && (
-        <Text textAlign="center" fontWeight="bold">
-          Thanks for purchasing!
-          <br />
-          <Link isExternal href={`https://etherscan.io/tx/${txHash}`}>
-            View TX on Etherscan
-          </Link>
+    correctNetwork ? (
+      <>
+        <Text>Waves are 0.01 ETH each - limited to 1 per tx</Text>
+        <Text fontWeight="bold">{amountMinted}/1000 minted</Text>
+        <Text fontStyle="italic" textAlign="center">
+          For your safety, please wait for your first tx to be mined before
+          doing further transactions.
         </Text>
-      )}
-      <Reward ref={selfRewardRef} type="confetti">
-        <Button onClick={handleMint}>Mint for yourself</Button>
-      </Reward>
-      <Text fontStyle="italic">or</Text>
-      <Input
-        placeholder="A friend's address or ENS name"
-        value={input}
-        onChange={handleInputChange}
-      />
-      <Reward ref={friendRewardRef} type="confetti">
-        <Button onClick={handleMintForFriend}>Mint for a friend</Button>
-      </Reward>
-      {address && <Text textAlign="center">Connected Address {address}</Text>}
-    </>
+        {txHash && (
+          <Text textAlign="center" fontWeight="bold">
+            Thanks for purchasing!
+            <br />
+            <Link isExternal href={`https://etherscan.io/tx/${txHash}`}>
+              View TX on Etherscan
+            </Link>
+          </Text>
+        )}
+        <Reward ref={selfRewardRef} type="confetti">
+          <Button onClick={handleMint}>Mint for yourself</Button>
+        </Reward>
+        <Text fontStyle="italic">or</Text>
+        <Input
+          placeholder="A friend's address or ENS name"
+          value={input}
+          onChange={handleInputChange}
+        />
+        <Reward ref={friendRewardRef} type="confetti">
+          <Button onClick={handleMintForFriend}>Mint for a friend</Button>
+        </Reward>
+        {address && <Text textAlign="center">Connected Address {address}</Text>}
+      </>
+    ) : (
+      <>Please make sure you connect to Mainnet</>
+    )
   ) : (
     <>
       <Button onClick={handleConnect}>Connect</Button>
