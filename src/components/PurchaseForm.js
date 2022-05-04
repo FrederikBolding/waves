@@ -69,21 +69,31 @@ export const PurchaseForm = () => {
     }
   }, [web3]);
 
-  const handleMint = () => {
+  const handleMint = async () => {
     if (contract) {
-      contract.mintForSelf({ value: utils.parseEther("0.01") }).then((tx) => {
-        selfRewardRef.current.rewardMe();
-        setTxHash(tx.hash);
-      });
+      // Bump GasLimit by about 20%
+      const gasLimit = await contract.estimateGas
+        .mintForSelf({ value: utils.parseEther("0.01") })
+        .then((g) => g.div(100).mul(120));
+      contract
+        .mintForSelf({ value: utils.parseEther("0.01"), gasLimit })
+        .then((tx) => {
+          selfRewardRef.current.rewardMe();
+          setTxHash(tx.hash);
+        });
     }
   };
 
   const handleInputChange = (event) => setInput(event.target.value);
 
-  const handleMintForFriend = () => {
+  const handleMintForFriend = async () => {
     if (contract) {
-      contract
+      // Bump GasLimit by about 20%
+      const gasLimit = await contract.estimateGas
         .mintForFriend(input, { value: utils.parseEther("0.01") })
+        .then((g) => g.div(100).mul(120));
+      contract
+        .mintForFriend(input, { value: utils.parseEther("0.01"), gasLimit })
         .then((tx) => {
           friendRewardRef.current.rewardMe();
           setTxHash(tx.hash);
@@ -98,10 +108,6 @@ export const PurchaseForm = () => {
       <>
         <Text>Waves are 0.01 ETH each - limited to 1 per tx</Text>
         <Text fontWeight="bold">{amountMinted}/1000 minted</Text>
-        <Text fontStyle="italic" textAlign="center">
-          For your safety, please wait for your first tx to be mined before
-          doing further transactions.
-        </Text>
         {txHash && (
           <Text textAlign="center" fontWeight="bold">
             Thanks for purchasing!
